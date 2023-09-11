@@ -1,0 +1,63 @@
+variables:
+  SAST_IMAGE_SUFFIX: '-fips'
+
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  # - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
+
+image: public.ecr.aws/sam/build-nodejs16.x
+
+stages:
+  - build
+  - test
+  - lint
+  - unit_test
+  - vulnerability_test
+
+build:
+  stage: build
+  script:
+    - cat ${testnet_envfile} > .env
+    - npm install
+    - npm run compile
+  artifacts:
+    untracked: true    
+
+sast:
+  stage: test
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
+  dependencies:
+    - build
+
+unit_test:
+  stage: unit_test
+  script:
+    - npm run test
+  dependencies:
+    - build
+
+scanner_test:
+  stage: vulnerability_test
+  image: alpine:latest
+  script:
+    - apk add python3 py3-pip
+    - apk add --update nodejs npm
+    - pip3 install slither-analyzer solc-select
+    - solc-select install 0.8.18
+    - solc-select use 0.8.18
+    - npm run slither
+  dependencies:
+    - build
