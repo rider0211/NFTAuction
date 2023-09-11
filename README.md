@@ -42,12 +42,12 @@ To get started with this project, you'll need to follow these steps:
 
 Clone this repository to your local machine:
 ```shell
-git clone [https://github.com/your-username/your-repo.git](https://github.com/xhulz/NFTAuction.git)
+git clone https://github.com/xhulz/NFTAuction.git
 ```
 
 Navigate to the project directory:
 ```shell
-cd your-repo
+cd NFTAuction
 ```
 
 Rename the .env.example to .env.
