@@ -1,4 +1,4 @@
-# Project Name
+# NFTAuction
 
 Solidity Developer Take-Home Challenge
 
