@@ -42,7 +42,7 @@ To get started with this project, you'll need to follow these steps:
 
 Clone this repository to your local machine:
 ```shell
-git clone https://github.com/your-username/your-repo.git
+git clone [https://github.com/your-username/your-repo.git](https://github.com/xhulz/NFTAuction.git)
 ```
 
 Navigate to the project directory:
